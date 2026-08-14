@@ -1,7 +1,4 @@
 databaseChangeLog:
-  - preConditions:
-      - runningAs:
-          username:  postgres
   - includeAll:
       relativeToChangelogFile: true
       path: changeset/
