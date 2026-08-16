@@ -1,11 +1,9 @@
 package ru.nersus.storage.service;
 
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.nersus.storage.dto.AuthRqDto;
@@ -17,21 +15,19 @@ import ru.nersus.storage.mapper.AuthRqDtoMapper;
 import ru.nersus.storage.repo.SessionRepo;
 import ru.nersus.storage.repo.UserRepo;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class AuthService {
+public class UserService {
 
     UserRepo userRepo;
     AuthRqDtoMapper authRqDtoMapper;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     SessionRepo sessionRepo;
 
-    @Transactional
     public AuthWithSessionRsDto signUp(AuthRqDto authRqDto) {
         if (userRepo.existsByEmail(authRqDto.username())) {
             log.info("User with email: {} already exists", authRqDto.username());
@@ -43,23 +39,10 @@ public class AuthService {
         Session session = new Session(UUID.randomUUID().toString(), saveUser.getId(), saveUser.getEmail());
         sessionRepo.save(session);
 
+        //Optional<Session> byId = sessionRepo.findById(session.getId());
+        //System.out.println(byId.get().getUserId());
+
         return new AuthWithSessionRsDto(saveUser.getEmail(), UUID.fromString(session.getId()));
-    }
-
-    public AuthWithSessionRsDto signIn(AuthRqDto authRqDto) {
-        Optional<User> saveUser = userRepo.findByEmail(authRqDto.username());
-        if (saveUser.isEmpty()) {
-            log.info("User with email: {} doesn't exists", authRqDto.username());
-            throw new BadCredentialsException(String.format("User with email: %s doesn't exists", authRqDto.username()));
-        }
-        if (!bCryptPasswordEncoder.matches(authRqDto.password(), saveUser.get().getPasswordHash())) {
-            log.info("Invalid password. Email: {}", authRqDto.username());
-            throw new BadCredentialsException(String.format("Invalid password. Email: %s", authRqDto.username()));
-        }
-        Session session = new Session(UUID.randomUUID().toString(), saveUser.get().getId(), saveUser.get().getEmail());
-        sessionRepo.save(session);
-
-        return new AuthWithSessionRsDto(saveUser.get().getEmail(), UUID.fromString(session.getId()));
     }
 
 }
