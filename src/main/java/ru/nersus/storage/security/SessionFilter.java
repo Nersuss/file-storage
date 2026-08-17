@@ -37,6 +37,7 @@ public class SessionFilter extends OncePerRequestFilter {
                 }
                 Optional<Session> sessionEntity = sessionRepo.findById(cookie.getValue());
                 if (sessionEntity.isEmpty()) {
+                    log.warn("User session not found in redis");
                     return;
                 }
                 SecurityContextHolder.getContext().setAuthentication(new User(sessionEntity.get().getUserId(), sessionEntity.get().getEmail(), null));
