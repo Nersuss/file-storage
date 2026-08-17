@@ -69,6 +69,6 @@ public class User implements UserDetails, Authentication {
 
     @Override
     public String getName() {
-        return "";
+        return email;
     }
 }

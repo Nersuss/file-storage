@@ -47,7 +47,12 @@ public class AuthController {
 
     @PostMapping("/sign-out")
     @Operation(summary = "Logout")
-    void logout() {
+    void logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("session", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
 }

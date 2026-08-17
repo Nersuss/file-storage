@@ -23,8 +23,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
-//    implementation("org.springframework.boot:spring-boot-starter-session-data-redis")
-//    implementation("org.springframework.boot:spring-boot-starter-data-redis:3.2.0")
     implementation("redis.clients:jedis:8.0.0")
     implementation("org.springframework.data:spring-data-redis:4.1.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")

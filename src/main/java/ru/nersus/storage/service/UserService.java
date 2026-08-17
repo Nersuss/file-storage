@@ -39,9 +39,6 @@ public class UserService {
         Session session = new Session(UUID.randomUUID().toString(), saveUser.getId(), saveUser.getEmail());
         sessionRepo.save(session);
 
-        //Optional<Session> byId = sessionRepo.findById(session.getId());
-        //System.out.println(byId.get().getUserId());
-
         return new AuthWithSessionRsDto(saveUser.getEmail(), UUID.fromString(session.getId()));
     }
 
