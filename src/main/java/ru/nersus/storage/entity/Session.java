@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @RedisHash("session")
 @AllArgsConstructor
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Setter
 public class Session implements Serializable {
-    private String id;
+    private UUID id;
     private int userId;
     private String email;
 }

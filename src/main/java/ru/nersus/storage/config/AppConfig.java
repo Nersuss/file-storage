@@ -1,5 +1,6 @@
 package ru.nersus.storage.config;
 
+import io.minio.MinioClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -21,7 +22,7 @@ public class AppConfig {
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setPort(6379);
+        redisStandaloneConfiguration.setPort(6379);//TODO Add @Value()
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
@@ -30,6 +31,14 @@ public class AppConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
         return template;
+    }
+
+    @Bean
+    public MinioClient minioClient() {
+        return MinioClient.builder()
+                .endpoint("http://127.0.0.1:9000")//TODO Add @Value()
+                .credentials("minioadmin", "minioadmin")
+                .build();
     }
 
 }

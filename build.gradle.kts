@@ -28,6 +28,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
     implementation("org.mapstruct:mapstruct:1.6.3")
     implementation("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+    implementation("io.minio:minio:9.0.3")
     compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")

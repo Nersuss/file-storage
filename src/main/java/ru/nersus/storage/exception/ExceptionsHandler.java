@@ -1,5 +1,6 @@
 package ru.nersus.storage.exception;
 
+import io.minio.errors.MinioException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +29,13 @@ public class ExceptionsHandler {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorMessageRs BadCredentialsException(Exception ex) {
+
+        return new ErrorMessageRs(ex.getMessage());
+    }
+
+    @ExceptionHandler(MinioException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessageRs MinioException(Exception ex) {
 
         return new ErrorMessageRs(ex.getMessage());
     }

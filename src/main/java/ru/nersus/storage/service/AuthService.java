@@ -1,6 +1,6 @@
 package ru.nersus.storage.service;
 
-import jakarta.transaction.Transactional;
+import io.minio.MinioClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.nersus.storage.dto.AuthRqDto;
 import ru.nersus.storage.dto.AuthWithSessionRsDto;
 import ru.nersus.storage.entity.Session;
@@ -30,6 +31,7 @@ public class AuthService {
     AuthRqDtoMapper authRqDtoMapper;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     SessionRepo sessionRepo;
+    MinioClient minio;
 
     @Transactional
     public AuthWithSessionRsDto signUp(AuthRqDto authRqDto) {
@@ -40,12 +42,13 @@ public class AuthService {
         AuthRqDto encryptUser = authRqDto.encodePassword(bCryptPasswordEncoder);
         User saveUser = userRepo.save(authRqDtoMapper.toEntity(encryptUser));
 
-        Session session = new Session(UUID.randomUUID().toString(), saveUser.getId(), saveUser.getEmail());
-        sessionRepo.save(session);
+        Session session = new Session(UUID.randomUUID(), saveUser.getId(), saveUser.getEmail());
+        sessionRepo.save(session);//TODO is really need? i think no
 
-        return new AuthWithSessionRsDto(saveUser.getEmail(), UUID.fromString(session.getId()));
+        return new AuthWithSessionRsDto(saveUser.getEmail(), session.getId());
     }
 
+    @Transactional
     public AuthWithSessionRsDto signIn(AuthRqDto authRqDto) {
         Optional<User> saveUser = userRepo.findByEmail(authRqDto.username());
         if (saveUser.isEmpty()) {
@@ -56,10 +59,10 @@ public class AuthService {
             log.info("Invalid password. Email: {}", authRqDto.username());
             throw new BadCredentialsException(String.format("Invalid password. Email: %s", authRqDto.username()));
         }
-        Session session = new Session(UUID.randomUUID().toString(), saveUser.get().getId(), saveUser.get().getEmail());
+        Session session = new Session(UUID.randomUUID(), saveUser.get().getId(), saveUser.get().getEmail());
         sessionRepo.save(session);
 
-        return new AuthWithSessionRsDto(saveUser.get().getEmail(), UUID.fromString(session.getId()));
+        return new AuthWithSessionRsDto(saveUser.get().getEmail(), session.getId());
     }
 
 }
