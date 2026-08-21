@@ -7,7 +7,9 @@ import io.minio.errors.MinioException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -20,13 +22,16 @@ public class MinioBucketInitializer implements ApplicationRunner {
 
     MinioClient minioClient;
 
+    @Value("${minio.bucket.name}")
+    @NonFinal
+    String bucketName;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         minioMakeBucket();
     }
 
     public void minioMakeBucket() throws MinioException {
-        String bucketName = "user-files";
         boolean isBucketExists = minioClient.bucketExists(BucketExistsArgs.builder()
                 .bucket(bucketName)
                 .build());

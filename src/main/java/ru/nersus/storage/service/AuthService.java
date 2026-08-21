@@ -1,6 +1,5 @@
 package ru.nersus.storage.service;
 
-import io.minio.MinioClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +30,6 @@ public class AuthService {
     AuthRqDtoMapper authRqDtoMapper;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     SessionRepo sessionRepo;
-    MinioClient minio;
 
     @Transactional
     public AuthWithSessionRsDto signUp(AuthRqDto authRqDto) {

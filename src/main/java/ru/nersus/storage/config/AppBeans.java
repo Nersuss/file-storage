@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Configuration
 @EnableRedisRepositories(basePackages = "ru.nersus.storage.repo")
-public class AppConfig {
+public class AppBeans {
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
